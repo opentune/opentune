@@ -6,7 +6,7 @@
     "title": "opentune",
     "icon": "images/icon.png",
     "frame": false,
-    "toolbar": true,
+    "toolbar": false,
     "width": 1140,
     "height": 700,
     "min_width": 950,

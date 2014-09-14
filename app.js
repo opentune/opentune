@@ -1,6 +1,7 @@
 var lastfmAPIKey = 'f43ee972802462f7a6e9e6b9b5805c5d';
-var cacheDirectory = process.env.APPDATA+"\\OpenTune\\cache\\";
+var cacheDirectory = process.env.APPDATA+"\\OpenTune\\cache";
 if (!fs.existsSync(cacheDirectory)) {
+	fs.mkdirSync(process.env.APPDATA+"\\OpenTune\\");
 	fs.mkdirSync(cacheDirectory);
 }
 
