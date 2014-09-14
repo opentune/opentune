@@ -1,0 +1,113 @@
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:700,600,400' rel='stylesheet' type='text/css' />
+<link href='http://fonts.googleapis.com/css?family=Muli:300,400' rel='stylesheet' type='text/css'>
+<link type="text/css" href="main.css" rel="stylesheet">
+<script>
+	var _ = require('underscore');
+	var yt = require('youtube-search');
+	var ytdl = require('ytdl-core');
+	var progress = require('request-progress');
+	var move = require('file-move');
+	var fs = require('fs');
+	var request = require('request');
+	var ffmpeg = require('liquid-ffmpeg');
+	var gui = require('nw.gui');
+	_.string = require('underscore.string');
+</script>
+<script src="jquery.js"></script>
+<script src="app.js"></script>
+<script src="sorttable.js"></script>
+
+<body>
+	<div id="navBar">
+	    <div id="tabTitleContainer">
+	        <p class="tabTitle activeTabTitle" id="exploreTabTitle">Explore</p><p class="tabTitle" id="downloadsTabTitle">Downloads</p>
+	    </div>
+	    <img src="images/logo.png" id="logo" />
+	    <form id="search">
+	    	<input id="searchbar" type="text" placeholder="Search for songs">
+	    	<input type="submit">
+	    </form>
+	    <div id="minimize" class="window-control-btn"></div>
+	    <div id="maximize" class="window-control-btn"></div>
+	    <div id="close" class="window-control-btn"></div>
+	</div>
+	<div id="content">
+		<p class="sectionHeader">Top trending today in <span id="currentGenre" class="dropdownGroup">All Genres</span><img src="images/dropdownArrow.png" id="dropdownArrow" class="dropdownGroup" /></p>
+		<div class="sectionHeaderDivider"></div>
+		<div id="dropdownBox" class="dropdownGroup">
+			<li class="dropdownItem">All Genres</li>
+			<li class="dropdownItem">Alternative</li>
+			<li class="dropdownItem">Blues</li>
+			<li class="dropdownItem">Classical</li>
+			<li class="dropdownItem">Comedy</li>
+			<li class="dropdownItem">Country</li>
+			<li class="dropdownItem">Dance</li>
+			<li class="dropdownItem">Electronic</li>
+			<li class="dropdownItem">Hip-Hop/Rap</li>
+			<li class="dropdownItem">Pop</li>
+			<li class="dropdownItem">R&amp;B/Soul</li>
+			<li class="dropdownItem">Rock</li>
+			<li class="dropdownItem">Kpop</li>
+		</div>
+		<div id="results"></div>
+	</div>
+	<div id="downloadsTab"></div>
+	<div id="downloadBar"></div>
+	<img src="images/loadingGif.gif" id="loadingGif" />
+	
+	<script type="text/javascript">
+	$(document).ready(function() {
+		updateGenre("All Genres");
+		populateDownloads();
+	});
+
+	$(document).on({
+	    mouseenter: function() {
+	        $(this).find('.albumArt').addClass('darkenAlbumArt');
+	        $(this).find(".downloadIcon").show();
+	    },
+	    mouseleave: function() {
+	        $(this).find('.albumArt').removeClass('darkenAlbumArt');
+	        $(this).find(".downloadIcon").hide();
+	    }
+	}, ".listItem");
+
+
+	/*ADDED AFTER SENDING OVER TO PRODUCTION*/
+
+	$(document).on({
+        mouseenter: function() {
+            $('#dropdownBox').addClass('dd-visible');
+        },
+        mouseleave: function() {
+            $('#dropdownBox').removeClass('dd-visible');
+        }
+    }, ".dropdownGroup");
+
+	$('.dropdownItem').click(function() {
+		//fade this dropdown out
+		$('#dropdownBox').removeClass('dd-visible');
+
+		//call function to remove current listItems and insert new ones from iTunes RSS feed
+		updateGenre($(this).text());
+	});
+
+	/* ANOTHER ANCHOR */
+	$("img").error(function(){
+	    $(this).src('images/genericAlbumLarge.png');
+	});
+
+	$('#downloadsTabTitle').click(function() {
+		if (!$(this).hasClass("activeTabTitle")) {
+			switchTabTo('downloads');
+		}
+	});
+
+	$('#exploreTabTitle').click(function() {
+		if (!$(this).hasClass("activeTabTitle")) {
+			switchTabTo('explore');
+		}
+	});
+
+	</script>
+</body>

@@ -1,0 +1,28 @@
+{
+  "name": "opentune",
+  "main": "new.html",
+  "version": "1.1.0",
+  "window": {
+    "title": "opentune",
+    "icon": "images/icon.png",
+    "frame": false,
+    "toolbar": true,
+    "width": 1140,
+    "height": 700,
+    "min_width": 950,
+    "min_height": 580,
+    "position": "center",
+    "resizable": true
+  },
+  "dependencies": {
+    "ffmetadata": "~1.1.0",
+    "file-move": "0.0.3",
+    "lastfm": "~0.9.2",
+    "liquid-ffmpeg": "^1.0.2",
+    "progress-stream": "^0.5.0",
+    "request": "~2.39.0",
+    "request-progress": "~0.3.1",
+    "underscore": "~1.6.0",
+    "youtube-search": "~0.1.4"
+  }
+}

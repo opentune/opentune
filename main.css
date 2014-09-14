@@ -1,0 +1,605 @@
+@font-face {
+    font-family: "FuturaOblique";
+    src: url('fonts/FuturaOblique.eot');
+    src: url('fonts/FuturaOblique.ttf') format('truetype');
+}
+* {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: default;
+    box-sizing: border-box;
+}
+html, body {
+	height: 100%;
+}
+body {
+	background-color: #353535;
+	text-align: center;
+	margin:0px;padding:0px;
+    font-family: "Open Sans", sans-serif;
+}
+::-webkit-scrollbar {
+    width: 12px; height: 10px;
+}
+::-webkit-scrollbar-track {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background-color: #464646;
+}
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background-color: #1c1c1c; 
+}
+.btn {
+    color: white;
+    font-weight: 600;
+    background-color: #ff2929;
+    padding: 8px 25px 10px 25px;
+    border-radius: 4px;
+    fborder: 1px solid black;
+    display: inline-block;
+    fbox-shadow: 0px 1px 0px #747474;
+    font-weight: 300;
+    cursor: pointer;
+}
+    .btn:hover {
+        opacity: 0.8;
+    }
+div#navBar {
+	width: 100%;
+	height: 72px;
+    background-color: #1b1b1b;
+	/*background-image: url('images/headerBG.png');
+	background-repeat: repeat-x;*/
+	position: absolute;
+	left: 0px; top: 0px;
+    -webkit-app-region: drag;
+}
+    div#tabTitleContainer {
+        padding: 0px; margin: 0px;
+        position: absolute;
+        left: 31px; top: 39px;
+        z-index: 99;
+        -webkit-app-region: no-drag;
+    }
+        p.tabTitle {
+            font-family: "Muli", "Open Sans", sans-serif;
+            color: #c7c7c7;
+            text-shadow: 0px 1px 1px black;
+            font-size: 17px;
+            display: inline-block;
+            margin: 0 8px; padding: 0px;
+            cursor: pointer;
+            fborder-left: 1px solid #111111;
+            text-align: right;
+            height: 33px;
+        }
+            p.tabTitle:first-child {
+                margin-left: 18px;
+                fborder-left: none;
+                fborder-right: 1px solid #303030;
+            }
+            p.activeTabTitle {
+                color: #ff2929;
+                border-bottom: 3px solid #ff2929;
+            }
+    img#logo {
+        margin-top: 23px;
+        cursor: pointer;
+        -webkit-app-region: no-drag;
+    }
+    input:focus {outline:none;}
+    #searchbar {
+        width: 220px;
+        position: absolute;
+        right: 15px;
+        bottom: 10px;
+        color: #c4c4c4;
+        background-color: black;
+        /*background-color: #0c0c0c;*/
+        background-image: url('images/searchicon.png');
+        background-position: 6px 6px;
+        background-repeat: no-repeat;
+        border: none;
+        fborder: 1px solid black;
+        box-shadow: 0px 1px 0px #2c2c2c;
+        border-radius: 16px;
+        font-family: "Open Sans", "Nanum Gothic", sans-serif;
+        font-size: 14px;
+        padding: 5px 13px 6px 30px;
+        -webkit-app-region: no-drag;
+    }
+    #searchbar {
+        -webkit-touch-callout: text;
+        -webkit-user-select: text;
+        -khtml-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
+        cursor: text;
+    }
+    .window-control-btn {
+        width: 11px; height: 11px;
+        border-radius: 11px;
+        background-color: black;
+        box-shadow: 0px 1px 0px #2c2c2c;
+        position: absolute;
+        top: 9px;
+        cursor: pointer;
+        -webkit-app-region: no-drag;
+    }
+        #minimize {
+            right: 45px;
+        }
+            #minimize:hover {
+                background-color: #cdd819;
+            }
+        #maximize {
+            right: 28px;
+        }
+            #maximize:hover {
+                background-color: #18a22e;
+            }
+        #close {
+            right: 11px;
+        }
+            #close:hover {
+                background-color: #c10404;
+            }
+
+div#content {
+    width: 100%;
+    margin: 0px;
+    padding: 20px 30px;
+    position: absolute;
+    top: 72px; bottom: 0px;
+    overflow-y: auto;
+    text-align: left;
+}
+
+p.sectionHeader {
+    color: white;
+    font-family: 'Muli', 'Open Sans', sans-serif;
+    font-size: 22px;
+    font-weight: 300;
+    display: inline-block;
+    padding: 0px; margin: 0px 0px 0px 20px;
+}
+    div.sectionHeaderDivider {
+        height: 1px;
+        background-color: #1a1a1a;
+        box-shadow: 0px 1px 0px #484848;
+        margin: 5px 0px 10px 20px;
+    }
+div#results {
+    text-align: center;
+}
+div.listItem {
+    width: 130px; height: 190px;
+    background-color: #1f2024;
+    background-image: url('images/genericAlbumLarge.png');
+    background-size: 128px 130px;
+    background-position: center top;
+    background-repeat: no-repeat;
+    padding: 0px;
+    border-radius: 4px;
+    border: 1px solid #131313;
+    position: relative;
+    display: inline-block;
+    margin: 0px 17px 25px 0px;
+    text-shadow: none;
+    opacity: 0;
+    overflow: hidden;
+}
+    div.listItem img.albumArt {
+        width: 128px; height: 130px;
+        cursor: pointer;
+        -webkit-transition: -webkit-filter 0.3s;
+    }
+        div.listItem img.darkenAlbumArt {
+            -webkit-filter: brightness(30%);
+        }
+    div.listItem p.listText {
+        position: absolute;
+        width: 117px;
+        bottom: -2px; left: 8px;
+        font-size: 14px;
+        color: #848484;
+        font-family: "Open Sans", "Nanum Gothic", sans-serif;
+        text-align: left;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+        p.listText span.title {
+            color: white;
+            ffont-weight: 600;
+        }
+    div.listItem img.downloadIcon {
+        position: absolute;
+        left: 33px; top: 36px;
+        cursor: pointer;
+        display: none;
+    }
+input[type="submit"] {
+    display: none;
+}
+div#download-popup {
+    width: 780px;
+    height: 560px;
+    background-color: #1c1c1c;
+    border-radius: 6px;
+    border: 1px solid black;
+    position: absolute;
+    top: 53%; left: 50%;
+    margin-top: -280px; margin-left: -390px;
+    z-index: 99;
+    display: none;
+}
+    #download-popup #popupCloseBtn {
+        position: absolute;
+        top: -12px; right: -12px;
+        cursor: pointer;
+        width: 30px;
+    }
+    img#song-page-cover {
+        position: absolute;
+        left: 35px; top: 35px;
+        width: 205px; height: 205px;
+        border: 1px solid black;
+        box-shadow: 0px 1px 0px #747474;
+        background-image: url('images/genericAlbumLarge.png');
+        background-size: 205px 205px;
+        background-repeat: no-repeat;
+    }
+    p#title-area {
+        padding: 0px; margin: 0px;
+        width: 475px;
+        position: absolute;
+        left: 270px; top: 35px;
+        color: #888888;
+        font-size: 20px;
+        fbackground-color: black;
+        text-align: left;
+    }
+        .song-page-title {
+            color: white;
+            font-size: 33px;
+            font-weight: 300;
+        }
+        .song-page-artist {
+            font-size: 23px;
+            font-weight: 300;
+        }
+        .song-page-album {
+            line-height: 20px;
+        }
+        .bigBtn {
+            padding: 8px 25px 10px 25px;
+            border-radius: 4px;
+            margin-top: 30px;
+        }
+    div#download-popup .divider {
+        width: 712px; height: 1px;
+        background-color: black;
+        position: absolute;
+        left: 35px; top: 265px;
+        box-shadow: 0px 1px 0px #4e4e4e;
+    }
+    div#video-options-container {
+        position: absolute;
+        left: 28px; top: 280px;
+        width: 725px; height: 260px;
+        text-align: left;
+        padding: 0px; margin: 0px;
+    }
+        div.video-option {
+            width: 360px; height: 85px;
+            margin: 0px; padding: 0px;
+            display: inline-block;
+            position: relative;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+            div.video-option:hover {
+                background-color: #2a2a2a;
+            }
+        div.video-option * {
+            cursor: pointer;
+        }
+        div.active-video-option {
+            background-color: #0d0d0d;
+        }
+            div.active-video-option:hover {
+                background-color: #0d0d0d;
+            }
+            img.yt-thumbnail {
+                position: absolute;
+                left: 7px; top: 6px;
+                width: 130px; height: 72px;
+                display: inline-block;
+                border-radius: 3px;
+            }
+            p.yt-text {
+                position: absolute;
+                left: 147px; top: -6px;
+                width: 210px;
+                height: 70px;
+                overflow: hidden;
+                color: white;
+                font-size: 14px;
+                display: inline-block;
+            }
+                p.yt-text .yt-duration {
+                    font-weight: bold;
+                }
+div#curtain {
+    position: absolute;
+    left: 0px; top: 72px;
+    right: 0px; bottom: 0px;
+    background-color: black;
+    opacity: 0.9;
+    z-index: 10;
+}
+img#loadingGif {
+    position: absolute;
+    top: 50%; left: 50%;
+    margin-top: -13px; margin-left: -40px;
+    z-index: 99;
+    fdisplay: none;
+}
+
+div#downloadBar {
+    width: 100%; height: 0px;
+    margin: 0px;
+    padding: 0px;
+    position: absolute;
+    bottom: 0px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    background-color: #0a0a0a;
+    border-top: 1px solid #3f3f3f;
+    text-align: left;
+    white-space: nowrap;
+}
+    div#downloadBar::-webkit-scrollbar-track {
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        background-color: black;
+    }
+    div#downloadBar::-webkit-scrollbar-thumb {
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        background-color: #424242; 
+    }
+    div.downloadItem {
+        width: 190px; height: 70px; /*total width(80), height(114)*/
+        padding: 5px;
+        background-color: #1b1b1b;
+        border-radius: 3px;
+        box-shadow: 0px 2px 0px black;
+        display: inline-block;
+        margin: 0px 5px 0px 0px;
+        position: relative;
+        text-align: left;
+    }
+    div.newDownloadItem {
+        width: 0px;
+        overflow: hidden;
+        fopacity: 0.3;
+    }
+        div.newDownloadItem .second {
+            opacity: 0;
+        }
+        div.downloadItem img.albumArt {
+            width: 61px; height: 61px;
+            border: 1px solid #0b0b0b;
+            box-shadow: 0px 1px 0px #353535;
+            float: left;
+            background-image: url('images/genericAlbumLarge.png');
+            background-size: 61px 61px;
+            background-repeat: no-repeat;
+        }
+        div.downloadItem p.title {
+            width: 112px; height: 15px;
+            margin: 0px 0px 0px 6px; padding: 0px;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            float: left;
+        }
+        div.downloadItem p.artist {
+            width: 112px; height: 15px;
+            margin: 1px 0px 0px 6px; padding: 0px;
+            color: #707070;
+            font-size: 11px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            float: left;
+        }
+        div.downloadItem p.downloading {
+            width: 112px; height: 15px;
+            margin: 3px 0px 0px 6px; padding: 0px;
+            color: #ff2525;
+            font-size: 10px;
+            float: left;
+        }
+        div.downloadItem div.progress-container {
+            width: 104px; height: 4px;
+            margin: 1px 0px 0px 6px;
+            background-color: black;
+            float: left;
+            position: relative;
+        }
+            div.progress-container div.current-progress {
+                position: absolute;
+                left: 0px; top: 0px;
+                height: 100%;
+                background-color: #ff2525; 
+            }
+
+        div.downloadItem img.closeIcon {
+            position: absolute;
+            right: -7px; top: -7px;
+            z-index: 99;
+            display: none;
+            cursor: pointer;
+        }
+        div.downloadItem span.smallBtn {
+            padding: 2px 7px 4px 7px;
+            border-radius: 2px;
+            margin: 6px 0px 0px 6px;
+            font-size: 11px;
+            font-weight: 500;
+            border: none;
+            float: left;
+        }
+
+/*ADDED AFTER SENDING OVER TO PRODUCTION*/
+
+span#currentGenre {
+    color: #949494;
+    padding-bottom: 5px;
+    cursor: pointer;
+}
+
+img#dropdownArrow {
+    margin: 0px 0px 3px 4px;
+    cursor: pointer;
+}
+
+div#dropdownBox {
+    width: 160px; height: 377px;
+    background-color: #1c1c1c;
+    border: 1px solid black;
+    border-radius: 3px;
+    position: absolute;
+    left:267px; top: 49px;
+    z-index: 99;
+    font-family: "Muli", "Open Sans", sans-serif;
+    font-size: 20px;
+    font-weight: 300;
+    color: #949494;
+    opacity: 0;
+    pointer-events: none;
+    -webkit-transition: 0.3s opacity;
+}
+div#dropdownBox.dd-visible {
+    opacity: 1;
+    pointer-events: all;
+}
+    div#dropdownBox li.dropdownItem {
+        list-style: none;
+        padding: 2px 8px;
+        cursor: pointer;
+    }
+    div#dropdownBox li.dropdownItem:first-child {
+        padding-top: 8px;
+    }
+    div#dropdownBox li.dropdownItem:last-child {
+        padding-bottom: 6px;
+    }
+        div#dropdownBox li.dropdownItem:hover {
+        background-color: #121212;
+        color: white;
+    }
+
+
+
+div#downloadsTab {
+    background-color: #353535;
+    width: 100%;
+    z-index: 999;
+    padding: 20px 30px;
+    position: absolute;
+    top: 72px; bottom: 0px;
+    overflow-y: auto;
+    text-align: left;
+    display: none;
+}
+table#song-table {
+    /*width: 740px;*/
+    width: 100%;
+    margin: 0px;
+    fborder: 1px solid black;
+    fbackground-color: black;
+    color: #dcdcdc;
+    border-collapse: collapse;
+    font-size: 15px;
+    font-weight: 500;
+    text-align: left;
+}
+table * {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+    th {
+        text-align: left;
+        color: #b8b8b8;
+        cursor: pointer;
+    }
+    tr {
+        height: 46px;
+        border-bottom: 1px solid #535353;
+    }
+        tr:not(.table-header):hover {
+            background-color: #3f3f3f;
+        }
+        tr.table-header th:hover {
+            color: white;
+        }
+        td.table-order {
+            width: 40px;
+            text-align: left;
+        }
+            td.table-order img {
+                width: 35px;
+                height: 35px;
+            }
+        td.table-name {
+            width: 200px;
+            max-width: 200px;
+        }
+        td.table-artist {
+            width: 230px;
+            max-width: 230px;
+        }
+        td.table-album {
+            width: 170px;
+            max-width: 170px;
+        }
+        td.table-length {
+            width: 70px;
+            max-width: 70px;
+        }
+        td {
+            /*overflow control*/
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-right: 5px;
+            position: relative;
+        }
+    tr.table-header {
+        height: 50px;
+        text-align: left;
+    }
+        tr.table-header th {
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+    /*table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after { 
+        content: " \25B4\25BE" 
+    }*/

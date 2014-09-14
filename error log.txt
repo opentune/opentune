@@ -1,0 +1,34 @@
+error log:
+
+[x]'weird al white & nerdy' doesn't return correct youtube results
+	-probably something to do with non-uri-encoded text
+
+
+[x]file downloads normally, converts, then file is empty
+	-Beethoven's 5 Secrets - The Piano Guys	
+	-Trap - Henry
+	-Crystalize - Lindsey Sterling
+	-You Belong with me - taylor swift
+	-promises - skrillex nero
+	-trouble maker - trouble maker
+	-boneless - steve aoki
+	-daylight - maroon 5
+	-one more night - maroon 5
+	-am i wrong - nico & vinz
+
+-crashes when searching (type in search query, quickly/immediate/harshly hit enter)
+
+[x]non-english characters can't be saved as filename - breaks metadata too
+
+[x]"Error: ENOENT, open 'C:\Users\JACK\Documents\GitHub\opentune\cache\_-_LADIES'_CODE.mp3' "
+	-probably because of the apostrophe
+	-identify which special characters get automatically ripped out
+		-try & / \ # , + ( ) $ ~ % .. ' " : * ? < > { }
+
+[x]"Cannot call method 'toString' of undefined" (I'm not - Sam Smith)
+
+[x]when downloading multiple songs in one instance, all the files have the same album cover (the first download)
+
+[x]'no yt result' alert box, then app crashes
+
+-randomly not lets user close the program

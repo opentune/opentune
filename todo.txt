@@ -1,0 +1,40 @@
+[x]loading indicator
+
+[x]downloadBar (slides up on first download)
+
+[x]update section header
+
+[x]actual data for youtube options
+
+[too lazy]better content align handling (left but centered)
+
+[too lazy]graceful image loading (fade in)
+
+[x]better window controls (htmlize)
+
+[x]FIX THE FUCKING BUG WHERE MP3 FILE IS CORRUPT
+
+-fix bug where it crashes on startup
+
+-infinite scrolling on frontpage
+
+[x]album info from mbid
+
+[x]support unicode characters in filename
+
+[x]have a downloads tab, save all downloads in json file
+
+-add preview feature before downloading
+
+[x]fix CSS bug where header text overflows in popup
+	-Bailando (English version)
+
+[x]handle ajax errors gracefully (iTunes, LastFM, iTunes RSS)
+	-currently just handles offline connection
+
+PERFORMANCE IMPROVEMENTS:
+-say something between "converting to mp3" and "open folder" button (currently it leaves it empty)
+[x]download everything into "temp" or "cache" folder, not root directory
+-extract LastFM api key into settings json file
+-give user option to choose which directory to save to (save to settings json file)
+-splashscreen on startup
