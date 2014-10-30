@@ -223,14 +223,15 @@ var download = function(info, ytid) {
 					    	});
 					    }
 					    if (info.hq) {
-					    	var slugifiedTitle = _.string.slugify(info.title);
-					    	id3.write(cacheDirectory+filename, {title: info.title, artist: info.artist, album: info.album}, [cacheDirectory+slugifiedTitle+'.jpeg'], function (err) {
+					    	//var slugifiedTitle = _.string.slugify(info.title);
+					    	var imgname = encodeURIComponent(info.title).replace(/[\/\\#,\s+$~%.'":*?<>{}]/g,'_');
+					    	id3.write(cacheDirectory+filename, {title: info.title, artist: info.artist, album: info.album}, [cacheDirectory+imgname+'.jpeg'], function (err) {
 					    		if (err) {
 					    			console.log(err);
 					    		}
 					    		_move();
-								require('fs').unlink(cacheDirectory+slugifiedTitle+'.jpeg');
-								require('fs').unlink(cacheDirectory+slugifiedTitle+'.png');
+								require('fs').unlink(cacheDirectory+imgname+'.jpeg');
+								require('fs').unlink(cacheDirectory+imgname+'.png');
 					    	});
 					    }
 					    else {
@@ -268,7 +269,8 @@ var download = function(info, ytid) {
 				    res.on('end', function(){
 				    	status.text('Downloading artwork...');
 				    	console.log("fetching artwork..");
-				    	var imgname = _.string.slugify(info.title);
+				    	//var imgname = _.string.slugify(info.title);
+						var imgname = encodeURIComponent(info.title).replace(/[\/\\#,\s+$~%.'":*?<>{}]/g,'_');
 				        fs.writeFile(cacheDirectory+imgname+'.png', imagedata, 'binary', function(err){
 				            if (err) throw err
 				            $('<img src="'+cacheDirectory+imgname+'.png">').on('load', function() {

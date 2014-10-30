@@ -32,6 +32,12 @@
 [x]handle ajax errors gracefully (iTunes, LastFM, iTunes RSS)
 	-currently just handles offline connection
 
+-option to change download location/directory
+
+[x]fix slugify bug for album covers (Korean text not showing)
+
+-display proper song length in song detail popup
+
 PERFORMANCE IMPROVEMENTS:
 -say something between "converting to mp3" and "open folder" button (currently it leaves it empty)
 [x]download everything into "temp" or "cache" folder, not root directory
