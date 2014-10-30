@@ -90,9 +90,21 @@ div#navBar {
             }
     img#logo {
         margin-top: 23px;
+        position: relative;
+        right: 13px;
         cursor: pointer;
         -webkit-app-region: no-drag;
     }
+    img#homeIcon {
+        position: absolute;
+        left: 50%; top: 35px;
+        margin-left: -113px;
+        opacity: 0;
+        -webkit-transition: opacity 0.3s;
+    }
+        img#homeIcon.homeIcon-visible {
+            opacity: 1;
+        }
     input:focus {outline:none;}
     #searchbar {
         width: 220px;

@@ -23,6 +23,7 @@
 	    <div id="tabTitleContainer">
 	        <p class="tabTitle activeTabTitle" id="exploreTabTitle">Explore</p><p class="tabTitle" id="downloadsTabTitle">Downloads</p>
 	    </div>
+	    <img src="images/homeIcon.png" id="homeIcon" />
 	    <img src="images/logo.png" id="logo" />
 	    <form id="search">
 	    	<input id="searchbar" type="text" placeholder="Search for songs">
@@ -109,6 +110,15 @@
 			switchTabTo('explore');
 		}
 	});
+
+	$(document).on({
+        mouseenter: function() {
+            $('#homeIcon').addClass('homeIcon-visible');
+        },
+        mouseleave: function() {
+            $('#homeIcon').removeClass('homeIcon-visible');
+        }
+    }, "#logo");
 
 	</script>
 </body>

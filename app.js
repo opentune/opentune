@@ -380,7 +380,7 @@ var openFile = function() {
 var win = gui.Window.get();
 
 $(document)
-.on('click', '#logo', function(){updateGenre('All Genres');updateSectionHeader("toDefault")})
+.on('click', '#logo', function(){updateGenre('All Genres');updateSectionHeader("toDefault");switchTabTo('explore')})
 .on('submit', '#search', searchEntered)
 .on('click', '.listItem', trackClicked)
 .on('click', '.video-option', changeYTVideo)
