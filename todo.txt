@@ -16,7 +16,7 @@
 
 -fix bug where it crashes on startup
 
--infinite scrolling on frontpage
+[x]infinite scrolling on frontpage
 
 [x]album info from mbid
 
@@ -24,19 +24,21 @@
 
 [x]have a downloads tab, save all downloads in json file
 
--add preview feature before downloading
-
 [x]fix CSS bug where header text overflows in popup
 	-Bailando (English version)
 
 [x]handle ajax errors gracefully (iTunes, LastFM, iTunes RSS)
 	-currently just handles offline connection
 
--option to change download location/directory
-
 [x]fix slugify bug for album covers (Korean text not showing)
 
 -display proper song length in song detail popup
+
+-add preview feature before downloading
+
+-option to change download location/directory
+
+-contextmenu in downloads tab
 
 PERFORMANCE IMPROVEMENTS:
 -say something between "converting to mp3" and "open folder" button (currently it leaves it empty)

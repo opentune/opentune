@@ -56,7 +56,7 @@ var searchLastFm = function(input) {
 }
 var result;
 var searchiTunes = function(input) {
-	request("https://itunes.apple.com/search?term=" + input + "&limit=50&entity=song", 
+	request("https://itunes.apple.com/search?term=" + input + "&limit=49&entity=song", 
 	function(err, response, body) {
 		if (err) {
 			alert("error retreiving results!");
@@ -64,15 +64,24 @@ var searchiTunes = function(input) {
 		}
 		body = JSON.parse(body);
 		result = body.results;
+		var loadMore = true;
+		if (result.length < 49) loadMore = false;
 		$('#results').empty();
 		_.each(result, function (result) {
 			var albumcover = result.artworkUrl100.replace("100x100", "200x200");
 			var hq = result.artworkUrl100.replace("100x100", "400x400");
-			makeSearchResult(result.trackName, result.artistName, result.collectionName, albumcover, hq);
+			var listItem = makeSearchResult(result.trackName, result.artistName, result.collectionName, albumcover, hq);
+			$('#results').append(listItem);
 		});
+		//add temporary button to load more tracks content
+		if (loadMore) $('#results').append("<div class='loadmoreBtn' data-type='search' data-codeorquery='" + input + "'>load more tracks</div>");
 		refreshGenreAnimation();
 	});
 }
+
+/* returns a single listItem DOM object
+ * generated from the given metadata input
+ */
 var makeSearchResult = function(title, artist, album, albumcover, hq, mbid) {
 	var template = [
 		'<div class="listItem" data-title="<%- title %>" data-artist="<%- artist %>" data-album="<%- album %>" data-hq="<%- hq %>" data-mbid="<%- mbid %>">',
@@ -86,7 +95,7 @@ var makeSearchResult = function(title, artist, album, albumcover, hq, mbid) {
 	].join('\n');
 
 	var output = _.template(template, {artist: artist, title: title, album: album, albumcover: albumcover, hq: hq, mbid: mbid});
-	$('#results').append(output);
+	return output;
 }
 
 var chooseFormat = function(formats, options) {
@@ -390,6 +399,7 @@ $(document)
 .on('click', '#maximize', function(){win.maximize();})
 .on('click', '#close', function(){win.close();})
 .on('click', '.table-row', openFile)
+.on('click', '.loadmoreBtn', function(){loadMore($(this).data('type'), $(this).data('codeorquery'));})
 
 
 /*ADDED AFTER SENDING OVER TO PRODUCTION*/
@@ -427,6 +437,9 @@ function updateGenre(genre) {
 		if (!error && response.statusCode == 200) {
 			response = JSON.parse(body);
 			if (response.feed.entry) { //another error check - sometimes RSS feed succeeds in loading, but doesn't return a list
+				//check if returned feed is larger than 50
+				var loadMore = true;
+				if (response.feed.entry.length < 49) loadMore = false;
 				for (var i=0;i<response.feed.entry.length;i++) {
 					var songObject = response.feed.entry[i];
 
@@ -442,6 +455,8 @@ function updateGenre(genre) {
 
 					$('#results').append(listItem);
 				}
+				//insert temporary button for loading more
+				if (loadMore) $('#results').append("<div class='loadmoreBtn' data-type='rss' data-codeorquery='" + code + "'>load more tracks</div>");
 				refreshGenreAnimation(); //refresh list with animation when everything is loaded
 			} else {
 				alert("Error fetching top charts!");
@@ -486,9 +501,12 @@ function populateDownloads() {
 	sorttable.makeSortable(document.getElementById("song-table"));
 }
 
-function refreshGenreAnimation() {
+function refreshGenreAnimation(items) {
 	$('#loadingGif').hide();
-	$('.listItem').each(function(i) {
+	if (!items) { //if items exists, function only animates selected listItems
+		items = $('.listItem');
+	}
+	items.each(function(i) {
 		$(this).delay((i++) * 50).fadeTo(300, 1); 
 	});
 }
@@ -520,6 +538,67 @@ function switchTabTo(destination) {
 		$('#exploreTabTitle').addClass("activeTabTitle");
 	}
 }
+
+function loadMore(type, codeOrQuery) {
+	$('.loadmoreBtn').remove();
+	$('#loadingGif').show(); //make this loading gif prettier with a solid color background!! (currently transparent)
+	var url;
+	var startcount;
+	if (type == 'rss') {
+		loadMoreRss(codeOrQuery);
+	} else { //type == 'search'
+		loadMoreSearch(codeOrQuery);
+	}
+}
+	function loadMoreRss(code) {
+		request('https://itunes.apple.com/us/rss/topsongs/limit=100/genre=' + code + '/json', function (error, response, body) {
+			if (!error && response.statusCode == 200) {
+				response = JSON.parse(body);
+				if (response.feed.entry) {
+					for (var i=49;i<response.feed.entry.length;i++) {
+						var songObject = response.feed.entry[i];
+
+						var listItem = $("<div>");
+						listItem.addClass("listItem").addClass("listItem-new");
+						listItem.attr("data-title", songObject['im:name'].label);
+						listItem.attr("data-artist", songObject['im:artist'].label);
+						listItem.attr("data-album", songObject['im:collection']['im:name'].label);
+						listItem.attr("data-hq", songObject['im:image'][2].label.replace("170x170", "400x400")); //hehe
+						listItem.append("<img src='" + songObject['im:image'][2].label + "' class='albumArt' />");
+						listItem.append("<p class='listText'><span class='title'>" + songObject['im:name'].label + "</span><br /><span class='artist'>" + songObject['im:artist'].label + "</span></p>");
+						listItem.append("<img src='images/downloadIcon.png' class='downloadIcon' />");
+
+						$('#results').append(listItem);
+					}
+					refreshGenreAnimation($('.listItem-new')); //refresh list with animation when everything is loaded
+				} else {
+					alert("Error fetching more songs!");
+					return;
+				}
+			} else {
+				alert("Error fetching more songs!");
+				return;
+			}
+		});	
+	}
+	function loadMoreSearch(query) {
+		request("https://itunes.apple.com/search?term=" + query + "&limit=100&entity=song", function(err, response, body) {
+			if (err) {
+				alert("error retreiving more results!");
+				return;
+			}
+			body = JSON.parse(body);
+			result = body.results.slice(49);
+			_.each(result, function (result) {
+				var albumcover = result.artworkUrl100.replace("100x100", "200x200");
+				var hq = result.artworkUrl100.replace("100x100", "400x400");
+				var listItem = makeSearchResult(result.trackName, result.artistName, result.collectionName, albumcover, hq);
+				//$(listItem).addClass('listItem-new'); //this doesn't work for some weird reason... resort to ugly hack below..
+				$('#results').append(listItem);
+			});
+			refreshGenreAnimation($($('.listItem').slice(49)));
+		});
+	}
 
 function downloadFinished(info) {
 	//add this file to localStorage downloads variable (parse > insert > stringify > save)
