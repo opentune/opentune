@@ -1,5 +1,5 @@
 var lastfmAPIKey = 'f43ee972802462f7a6e9e6b9b5805c5d';
-var cacheDirectory = process.env.APPDATA+"\\OpenTune\\cache";
+var cacheDirectory = process.env.APPDATA+"\\OpenTune\\cache\\";
 if (!fs.existsSync(cacheDirectory)) {
 	fs.mkdirSync(process.env.APPDATA+"\\OpenTune\\");
 	fs.mkdirSync(cacheDirectory);
@@ -147,6 +147,7 @@ var convertPNGtoJPG = function(image, imgname) {
 	fs.writeFile(cacheDirectory+imgname+'.' + ext, buffer);
 	return image;
 }
+
 var download = function(info, ytid) {
 	var newItem = [
 		'<div class="downloadItem newDownloadItem" data-id="<% ytid %>">',
@@ -172,15 +173,19 @@ var download = function(info, ytid) {
 	setTimeout(function () {
 		$(_newItem).find('.second').fadeTo(300, 1);
 	}, 300);
-	var req = ytdl('http://www.youtube.com/watch?v=' + ytid, { filter: function(format) { return format.container === 'mp4'; } }, function(url) {
-		//var filename = _.string.slugify(info.title + ' _ ' + info.artist).replace(/-/g, '');
-		//var filename = _.string.slugify(info.title + info.artist).replace(/-/g, '');
-		var tmpstr = info.title + " - " + info.artist;
-		var filename = tmpstr.replace(/[\/\\#,\s+$~%.'":*?<>{}]/g,'_');
-		console.log(filename);
-		var status = $(_newItem).find('.downloading');
-		status.text('Downloading...');
-		progress(request(url.url), {
+
+	// Prepare to download using ytdl
+	var tmpstr = info.title + " - " + info.artist;
+	var filename = tmpstr.replace(/[\/\\#,\s+$~%.'":*?<>{}]/g,'_');
+	console.log(filename);
+	var status = $(_newItem).find('.downloading');
+	status.text('Downloading...');
+
+	// Download video
+	ytdl('http://www.youtube.com/watch?v=' + ytid, { filter: function(format) { return format.container === 'mp4'; } })
+	.on('info', function(vidInfo, format) {
+		var directUrl = format.url;
+		progress(request(directUrl), {
 			throttle: 100,
 			delay: 100
 		})
@@ -189,7 +194,7 @@ var download = function(info, ytid) {
 			$(_newItem).find('.current-progress').css('width', prog.percent+ '%');
 			status.text('Downloading... ' + prog.percent + '%').appendTo('#download');
 		})
-		.pipe(require('fs').createWriteStream(cacheDirectory+filename+".mp4"))
+		.pipe(fs.createWriteStream(cacheDirectory+filename+".mp4"))
 		.on('error', function (err) {
 			status.text('Error downloading.')
 		})
@@ -252,6 +257,7 @@ var download = function(info, ytid) {
 					    	})
 					    }
 				}
+				console.log(info);
 				if (!info.hq) {
 					afterImageFetched();
 					return;
@@ -292,7 +298,9 @@ var download = function(info, ytid) {
 			})
 		});
 	});
+
 }
+
 var trackClicked = function() {
 	var info = this.dataset;
 	if (info.mbid) {

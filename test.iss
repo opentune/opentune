@@ -5,7 +5,7 @@
 
 [Setup]
 AppName=OpenTune
-AppVersion=1.1
+AppVersion=1.2
 DefaultDirName={pf}\OpenTune
 DefaultGroupName=OpenTune
 UninstallDisplayIcon={app}\opentune.exe

@@ -32,6 +32,8 @@
 
 [x]fix slugify bug for album covers (Korean text not showing)
 
+-store Open Sans and Muli font locally
+
 -display proper song length in song detail popup
 
 -add preview feature before downloading

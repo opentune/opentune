@@ -1,8 +1,5 @@
-var fs     = require('fs');
-var path   = require('path');
-var qs     = require('querystring');
 var util   = require('../lib/util');
-var assert = require('assert');
+var assert = require('assert-diff');
 
 
 var formats = [
@@ -79,6 +76,8 @@ var formats = [
     audioEncoding : 'aac',
     audioBitrate  : 128 },
 ];
+var getItags = function(format) { return format.itag; };
+
 
 
 describe('util.parseTime()', function() {
@@ -97,60 +96,92 @@ describe('util.parseTime()', function() {
 
 
 describe('util.sortFormats()', function() {
-  it('Sorts available formats from highest to lowest quality', function() {
-    var expected = ['43', '18', '5', '36', '17', '133', '160', '140'];
-    formats.sort(util.sortFormats);
-    for (var i = 0, l = formats.length; i < l; i ++) {
-      assert.equal(formats[i].itag, expected[i]);
-    }
+  describe('with `highest` given', function() {
+    it('Sorts available formats from highest to lowest quality', function() {
+      var sortedFormats = formats.slice();
+      sortedFormats.sort(util.sortFormats);
+      var itags = sortedFormats.map(getItags);
+      assert.deepEqual(itags, [
+        '43', '18', '5', '36', '17', '133', '160', '140'
+      ]);
+    });
   });
 });
 
 
 describe('util.chooseFormat', function() {
+  var sortedFormats = formats.slice();
+  sortedFormats.sort(util.sortFormats);
+
   describe('with no options', function() {
     it('Chooses highest quality', function() {
-      var format = util.chooseFormat(formats, {});
+      var format = util.chooseFormat(sortedFormats, {});
       assert.equal(format.itag, '43');
-    });
-  });
-
-  describe('with a filter', function() {
-    it('Tries to find a format that matches', function() {
-      var format = util.chooseFormat(formats, {
-        filter: function(format) { return format.container === 'mp4'; }
-      });
-      assert.equal(format.itag, '18');
-    });
-
-    describe('that doesn\'t match any format', function() {
-      it('Returns an error instead', function() {
-      var err = util.chooseFormat(formats, {
-        filter: function() { return false; }
-      });
-      assert.equal(err.message, 'no formats found with custom filter');
-      });
     });
   });
 
   describe('with lowest quality wanted', function() {
     it('Chooses lowest itag', function() {
-      var format = util.chooseFormat(formats, { quality: 'lowest' });
+      var format = util.chooseFormat(sortedFormats, { quality: 'lowest' });
       assert.equal(format.itag, '140');
     });
   });
 
   describe('with itag given', function() {
     it('Chooses matching format', function() {
-      var format = util.chooseFormat(formats, { quality: 5 });
+      var format = util.chooseFormat(sortedFormats, { quality: 5 });
       assert.equal(format.itag, '5');
     });
 
     describe('that is not in the format list', function() {
       it('Returns an error', function() {
-        var err = util.chooseFormat(formats, { quality: 42 });
+        var err = util.chooseFormat(sortedFormats, { quality: 42 });
         assert.equal(err.message, 'No such format found: 42');
       });
+    });
+  });
+});
+
+
+describe('util.filterFormats', function() {
+  it('Tries to find formats that match', function() {
+    var filter = function(format) { return format.container === 'mp4'; };
+    var itags = util.filterFormats(formats, filter).map(getItags);
+    assert.deepEqual(itags, ['18', '133', '160', '140']);
+  });
+
+  describe('that doesn\'t match any format', function() {
+    it('Returns an empty list', function() {
+      var list = util.filterFormats(formats, function() { return false; });
+      assert.equal(list.length, 0);
+    });
+  });
+
+  describe('with `video` given', function() {
+    it('Returns only matching formats', function() {
+      var itags = util.filterFormats(formats, 'video').map(getItags);
+      assert.deepEqual(itags, ['18', '43', '133', '36', '5', '160', '17']);
+    });
+  });
+
+  describe('with `videoonly` given', function() {
+    it('Returns only matching formats', function() {
+      var itags = util.filterFormats(formats, 'videoonly').map(getItags);
+      assert.deepEqual(itags, ['133', '160']);
+    });
+  });
+
+  describe('with `audio` given', function() {
+    it('Returns only matching formats', function() {
+      var itags = util.filterFormats(formats, 'audio').map(getItags);
+      assert.deepEqual(itags, ['18', '43', '36', '5', '17', '140']);
+    });
+  });
+
+  describe('with `audioonly` given', function() {
+    it('Returns only matching formats', function() {
+      var itags = util.filterFormats(formats, 'audioonly').map(getItags);
+      assert.deepEqual(itags, ['140']);
     });
   });
 });
@@ -192,11 +223,9 @@ describe('util.getVideoID()', function() {
 
 describe('util.parseFormats()', function() {
   it('Retrieves video formats from info', function() {
-    var page = fs.readFileSync(
-      path.resolve(__dirname, 'files/video_info/_HSylqgVYQI'), 'utf8');
-    var info = qs.parse(page);
+    var info = require('./files/info/pJk0p-98Xzc_preparsed.json');
     var formats = util.parseFormats(info);
     assert.ok(formats);
-    assert.equal(formats.length, 11);
+    assert.equal(formats.length, 14);
   });
 });
