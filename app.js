@@ -5,6 +5,18 @@ if (!fs.existsSync(cacheDirectory)) {
 	fs.mkdirSync(cacheDirectory);
 }
 
+var getUserHome = function() {
+    return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+}
+
+var defaultDownloadPath = getUserHome() + '\\Music\\OpenTune\\';
+if (!fs.existsSync(defaultDownloadPath)) {
+	fs.mkdirSync(defaultDownloadPath);
+}
+if (!localStorage.downloadPath) {
+	localStorage.downloadPath = defaultDownloadPath.substring(0, defaultDownloadPath.length-1);
+}
+
 var searchEntered = function (e) {
 	e.preventDefault();
 	var input = $(this).find('input[type=text]').val();
@@ -17,9 +29,6 @@ var searchEntered = function (e) {
 	$('#results').empty();
 	$('#loadingGif').show();
 	switchTabTo('explore');
-}
-var getUserHome = function() {
-    return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
 }
 var searchLastFm = function(input) {
 	var LastFmNode = require('lastfm').LastFmNode;
@@ -209,10 +218,11 @@ var download = function(info, ytid) {
 				filename += '.mp3';
 				status.text('Converted to MP3');
 				$('.downloading, .progress-container').remove();
-				var newdir = getUserHome() + '\\Music\\OpenTune';
-				if (!fs.existsSync(newdir)) {
+				var newdir = localStorage.downloadPath;
+				//var newdir = getUserHome() + '\\Music\\OpenTune';
+				/*if (!fs.existsSync(newdir)) {
 					fs.mkdirSync(newdir);
-				}
+				}*/
 				newdir += ('\\' + filename);
 				var id3 = require('ffmetadata');
 				status.text('Changing metadata..');
@@ -332,8 +342,8 @@ var populatePopup = function(info) {
 		}
 		results = _.first(results, 6);
 		var tmpl = [
-			'<div id="download-popup">',
-				'<img src="images/popupClose.png" id="popupCloseBtn">',
+			'<div class="download-popup">',
+				'<img src="images/popupClose.png" class="popupCloseBtn">',
 				'<img src="<%- cover %>" id="song-page-cover">',
 				'<p id="title-area">',
 					'<span class="song-page-title"><%- shorten(title) %></span> <br>',
@@ -362,10 +372,10 @@ var populatePopup = function(info) {
 	});
 }
 var togglePopup = function() {
-	$('#download-popup').fadeIn(300);
+	$('.download-popup').fadeIn(300);
     $('#curtain').fadeIn(300);
     $('body').on('click', function (e) {
-    	if (!$(e.target).is('#download-popup') && $(e.target).parents('#download-popup').length == 0) {
+    	if (!$(e.target).is('.download-popup') && $(e.target).parents('.download-popup').length == 0) {
     		closepopup();
     	}
     });   
@@ -382,16 +392,57 @@ var clickedDownload = function() {
 	download(info, ytid);
 }
 var closepopup = function() {
-	$('#download-popup').fadeOut(300);
+	$('.download-popup').fadeOut(300);
     $('#curtain').fadeOut(300);
     setTimeout(function () {
-    	$('#download-popup').remove();
-    	$('#curtain').remove();
+    	if ($('#curtain').css("opacity") < 0.1) { // to ensure that it's ready to be removed from DOM (kind of a quick hack)
+	    	$('.download-popup').remove();
+	    	$('#curtain').remove();
+	    }
     }, 300);
 	$('body').off('click');
 }
 var openFile = function() {
 	gui.Shell.openItem(this.dataset.filepath);
+}
+var openSettings = function() {
+	var tmpl = [
+		'<div class="download-popup">',
+			'<input style="display:none;" id="fileDialog" type="file" nwdirectory />',
+			'<img src="images/popupClose.png" class="popupCloseBtn">',
+			'<p id="title-area" style="left:35px">',
+				'<span class="song-page-title">Settings</span> <br>',
+			'</p>',
+			'<div class="divider" id="settingsDivider"></div>',
+			'<div id="content-area">',
+				'<span class="section-label">Download folder:</span>',
+				'<span class="dummy-form"><%- path %></span>',
+				'<span class="btn" id="changeBtn">change</span>',
+			'</div>',
+			'<span class="btn" id="saveBtn">Save</span>',
+		'</div>',
+		'<div id="curtain" style="display:none"></div>'
+	].join('\n');
+	var output = _.template(tmpl, {path: localStorage.downloadPath});
+	$(document.body).append(output);
+	togglePopup();
+}
+
+var changeFolder = function() {
+	var chooser = $('#fileDialog');
+	chooser.change(function(evt) {
+  		fileChosen($(this).val());
+	});
+	chooser.trigger('click'); 
+}
+function fileChosen(path) {
+	if (path != "") {
+		$('.dummy-form').text(path);
+	}
+}
+var saveSettings = function() {
+	localStorage.downloadPath = $('.dummy-form').text();
+	closepopup();
 }
 
 var win = gui.Window.get();
@@ -402,12 +453,15 @@ $(document)
 .on('click', '.listItem', trackClicked)
 .on('click', '.video-option', changeYTVideo)
 .on('click', '.song-page-download', clickedDownload)
-.on('click', '#popupCloseBtn', closepopup)
+.on('click', '.popupCloseBtn', closepopup)
 .on('click', '#minimize', function(){win.minimize();})
 .on('click', '#maximize', function(){win.maximize();})
 .on('click', '#close', function(){win.close();})
 .on('click', '.table-row', openFile)
 .on('click', '.loadmoreBtn', function(){loadMore($(this).data('type'), $(this).data('codeorquery'));})
+.on('click', '#settingsIcon', openSettings)
+.on('click', '#changeBtn', changeFolder)
+.on('click', '#saveBtn', saveSettings)
 
 
 /*ADDED AFTER SENDING OVER TO PRODUCTION*/

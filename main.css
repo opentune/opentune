@@ -104,6 +104,16 @@ div#navBar {
         img#homeIcon.homeIcon-visible {
             opacity: 1;
         }
+    img#settingsIcon {
+        position: absolute;
+        right: 245px;
+        bottom: 16px;
+        -webkit-app-region: no-drag;
+        cursor: pointer;
+    }
+        #settingsIcon:hover {
+            opacity: 0.8;
+        }
     input:focus {outline:none;}
     #searchbar {
         width: 220px;
@@ -239,7 +249,7 @@ div.listItem {
 input[type="submit"] {
     display: none;
 }
-div#download-popup {
+div.download-popup {
     width: 780px;
     height: 560px;
     background-color: #1c1c1c;
@@ -251,7 +261,7 @@ div#download-popup {
     z-index: 99;
     display: none;
 }
-    #download-popup #popupCloseBtn {
+    .download-popup .popupCloseBtn {
         position: absolute;
         top: -12px; right: -12px;
         cursor: pointer;
@@ -294,13 +304,50 @@ div#download-popup {
             border-radius: 4px;
             margin-top: 30px;
         }
-    div#download-popup .divider {
+    div.download-popup .divider {
         width: 712px; height: 1px;
         background-color: black;
         position: absolute;
         left: 35px; top: 265px;
         box-shadow: 0px 1px 0px #4e4e4e;
     }
+        #settingsDivider {
+            left: 35px; top: 90px;
+        }
+        .download-popup #content-area {
+            color: white;
+            font-size: 17px;
+            width: 712px; height: 370px;
+            text-align: left;
+            position: absolute;
+            left: 35px; top: 115px;
+        }
+            .section-label {
+                display: block;
+                margin-bottom: 10px;
+            }
+            .dummy-form {
+                font-size: 15px;
+                color: #c8c8c8;
+                background-color: #373737;
+                width: 530px;
+                border-radius: 5px;
+                padding: 5px 10px;
+                display: inline-block;
+            }
+            #changeBtn {
+                padding: 3px 10px 5px 10px;
+                border-radius: 5px;
+                margin-left: 3px;
+                display: inline-block;
+            }
+            #saveBtn {
+                fpadding: 3px 10px 5px 10px;
+                font-size: 20px;
+                position: absolute;
+                left: 390px; bottom: 26px;
+                margin-left: -40px;
+            }
     div#video-options-container {
         position: absolute;
         left: 28px; top: 280px;

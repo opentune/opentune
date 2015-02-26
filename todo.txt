@@ -14,7 +14,7 @@
 
 [x]FIX THE FUCKING BUG WHERE MP3 FILE IS CORRUPT
 
--fix bug where it crashes on startup
+[x]fix bug where it crashes on startup
 
 [x]infinite scrolling on frontpage
 
@@ -38,7 +38,9 @@
 
 -add preview feature before downloading
 
--option to change download location/directory
+[x]option to change download location/directory
+
+-algorithm to find best video
 
 -contextmenu in downloads tab
 
